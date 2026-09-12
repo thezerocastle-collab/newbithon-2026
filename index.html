@@ -398,6 +398,14 @@
             word-break: keep-all;
         }
 
+        .popup-hours {
+            color: #a7f3d0;
+            font-size: 11px;
+            line-height: 1.4;
+            margin-top: 5px;
+            word-break: keep-all;
+        }
+
         @keyframes pin-bounce {
             0% { transform: translateY(0); }
             100% { transform: translateY(-8px); }
@@ -769,7 +777,7 @@
         });
     });
 
-    // 4. 경계선 렌더링
+    // 4. 경계선 렌더링 (윤곽선 두께 슬림하게 조정)
     fetch('https://raw.githubusercontent.com/southkorea/seoul-maps/master/juso/2015/json/seoul_municipalities_geo_simple.json')
         .then(res => res.json())
         .then(data => {
@@ -779,9 +787,9 @@
 
                 const polygon = new kakao.maps.Polygon({
                     path: path,
-                    strokeWeight: 1.5,
+                    strokeWeight: 0.8,
                     strokeColor: '#FFFFFF',
-                    strokeOpacity: 0.5,
+                    strokeOpacity: 0.3,
                     strokeStyle: 'dash',
                     fillColor: '#000000',
                     fillOpacity: 0.1
@@ -799,9 +807,9 @@
 
                 const outerPolyline = new kakao.maps.Polyline({
                     path: path,
-                    strokeWeight: 3,
+                    strokeWeight: 1,
                     strokeColor: '#FFFFFF',
-                    strokeOpacity: 0.9,
+                    strokeOpacity: 0.7,
                     strokeStyle: 'solid'
                 });
                 outerPolyline.setMap(map);
@@ -852,13 +860,25 @@
         });
     }
 
-    // 이모지 마커 클릭 시 정보 팝업창을 띄우는 함수
+    // 이모지 마커 클릭 시 정보 팝업창을 띄우는 함수 (운영시간 추가)
     function showPlaceInfoPopup(place, lat, lng) {
         if (activeInfoWindow) {
             activeInfoWindow.setMap(null);
         }
 
         const address = place.road_address_name || place.address_name || '주소 정보 없음';
+        
+        // 24시 조건 및 정보에 따른 운영시간 구하기
+        const is24hOn = document.getElementById('toggle-24h') ? document.getElementById('toggle-24h').checked : false;
+        let hoursText = "09:00 - 22:00 (상세 문의)";
+
+        if (place.place_name.includes('24') || (is24hOn && (place.place_name.includes('카페') || place.place_name.includes('약국') || place.place_name.includes('병원')))) {
+            hoursText = "24시간 영업 (연중무휴)";
+        } else if (place.category_name && place.category_name.includes('편의점')) {
+            hoursText = "24시간 영업";
+        } else if (place.phone) {
+            hoursText = `운영시간 문의 (${place.phone})`;
+        }
 
         const popupDiv = document.createElement('div');
         popupDiv.className = 'facility-info-popup';
@@ -868,6 +888,7 @@
                 <span class="popup-close-btn" onclick="closePlaceInfoPopup()">✕</span>
             </div>
             <div class="popup-address">📍 ${address}</div>
+            <div class="popup-hours">⏰ ${hoursText}</div>
         `;
 
         activeInfoWindow = new kakao.maps.CustomOverlay({
