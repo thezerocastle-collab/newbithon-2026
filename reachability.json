@@ -1,41 +1,809 @@
 {
   "start": {
-    "name": "강남",
-    "lat": 37.4979,
-    "lon": 127.0276
+    "name": "강남역",
+    "lat": 37.49799,
+    "lon": 127.02791
   },
-  "datetime": "2026-09-12 23:40",
+  "datetime": "2026-09-12 23:30",
   "results": [
     {
-      "name": "홍대",
-      "lat": 37.5563,
-      "lon": 126.9237,
+      "name": "역삼",
+      "lat": 37.50062,
+      "lon": 127.03646,
       "reachable": true,
-      "total_time": 41,
+      "total_time": 5,
       "transfers": 0
     },
     {
-      "name": "서울역",
-      "lat": 37.5547,
-      "lon": 126.9707,
+      "name": "선릉",
+      "lat": 37.5045,
+      "lon": 127.04899,
+      "reachable": true,
+      "total_time": 8,
+      "transfers": 0
+    },
+    {
+      "name": "삼성",
+      "lat": 37.50884,
+      "lon": 127.06302,
+      "reachable": true,
+      "total_time": 8,
+      "transfers": 0
+    },
+    {
+      "name": "압구정",
+      "lat": 37.52707,
+      "lon": 127.02846,
+      "reachable": true,
+      "total_time": 18,
+      "transfers": 1
+    },
+    {
+      "name": "수서",
+      "lat": 37.48747,
+      "lon": 127.10193,
+      "reachable": true,
+      "total_time": 23,
+      "transfers": 1
+    },
+    {
+      "name": "천호",
+      "lat": 37.53864,
+      "lon": 127.12331,
+      "reachable": true,
+      "total_time": 39,
+      "transfers": 0
+    },
+    {
+      "name": "길동",
+      "lat": 37.5378,
+      "lon": 127.14,
+      "reachable": true,
+      "total_time": 47,
+      "transfers": 0
+    },
+    {
+      "name": "고덕",
+      "lat": 37.555,
+      "lon": 127.15415,
+      "reachable": true,
+      "total_time": 54,
+      "transfers": 0
+    },
+    {
+      "name": "수유",
+      "lat": 37.63805,
+      "lon": 127.02573,
+      "reachable": true,
+      "total_time": 59,
+      "transfers": 1
+    },
+    {
+      "name": "미아",
+      "lat": 37.62667,
+      "lon": 127.02598,
+      "reachable": true,
+      "total_time": 57,
+      "transfers": 1
+    },
+    {
+      "name": "미아사거리",
+      "lat": 37.61329,
+      "lon": 127.03005,
+      "reachable": true,
+      "total_time": 46,
+      "transfers": 1
+    },
+    {
+      "name": "김포공항",
+      "lat": 37.56238,
+      "lon": 126.80129,
+      "reachable": true,
+      "total_time": 58,
+      "transfers": 1
+    },
+    {
+      "name": "마곡",
+      "lat": 37.56018,
+      "lon": 126.82545,
       "reachable": false,
       "total_time": null,
       "transfers": null
     },
     {
-      "name": "종로",
-      "lat": 37.5704,
-      "lon": 126.983,
+      "name": "발산",
+      "lat": 37.5586,
+      "lon": 126.83767,
+      "reachable": false,
+      "total_time": null,
+      "transfers": null
+    },
+    {
+      "name": "화곡",
+      "lat": 37.54151,
+      "lon": 126.84046,
+      "reachable": false,
+      "total_time": null,
+      "transfers": null
+    },
+    {
+      "name": "신림",
+      "lat": 37.4842,
+      "lon": 126.92972,
       "reachable": true,
-      "total_time": 30,
+      "total_time": 22,
       "transfers": 0
     },
     {
-      "name": "잠실",
-      "lat": 37.5133,
-      "lon": 127.1001,
+      "name": "서울대입구",
+      "lat": 37.48125,
+      "lon": 126.95274,
+      "reachable": true,
+      "total_time": 19,
+      "transfers": 0
+    },
+    {
+      "name": "낙성대",
+      "lat": 37.47693,
+      "lon": 126.96369,
+      "reachable": true,
+      "total_time": 16,
+      "transfers": 0
+    },
+    {
+      "name": "봉천",
+      "lat": 37.48236,
+      "lon": 126.94189,
+      "reachable": true,
+      "total_time": 20,
+      "transfers": 0
+    },
+    {
+      "name": "건대입구",
+      "lat": 37.54037,
+      "lon": 127.06919,
+      "reachable": true,
+      "total_time": 25,
+      "transfers": 0
+    },
+    {
+      "name": "구의",
+      "lat": 37.53708,
+      "lon": 127.08592,
+      "reachable": true,
+      "total_time": 22,
+      "transfers": 0
+    },
+    {
+      "name": "강변",
+      "lat": 37.53509,
+      "lon": 127.09468,
+      "reachable": true,
+      "total_time": 18,
+      "transfers": 0
+    },
+    {
+      "name": "군자",
+      "lat": 37.55709,
+      "lon": 127.07958,
+      "reachable": true,
+      "total_time": 30,
+      "transfers": 1
+    },
+    {
+      "name": "구로",
+      "lat": 37.50304,
+      "lon": 126.88197,
+      "reachable": true,
+      "total_time": 77,
+      "transfers": 1
+    },
+    {
+      "name": "구로디지털단지",
+      "lat": 37.48527,
+      "lon": 126.9014,
+      "reachable": true,
+      "total_time": 37,
+      "transfers": 0
+    },
+    {
+      "name": "신도림",
+      "lat": 37.50881,
+      "lon": 126.89129,
+      "reachable": true,
+      "total_time": 32,
+      "transfers": 0
+    },
+    {
+      "name": "오류동",
+      "lat": 37.49453,
+      "lon": 126.84537,
+      "reachable": true,
+      "total_time": 48,
+      "transfers": 1
+    },
+    {
+      "name": "가산디지털단지",
+      "lat": 37.48034,
+      "lon": 126.88266,
+      "reachable": true,
+      "total_time": 89,
+      "transfers": 1
+    },
+    {
+      "name": "독산",
+      "lat": 37.46661,
+      "lon": 126.88925,
+      "reachable": true,
+      "total_time": 78,
+      "transfers": 1
+    },
+    {
+      "name": "금천구청",
+      "lat": 37.45563,
+      "lon": 126.89398,
+      "reachable": true,
+      "total_time": 75,
+      "transfers": 1
+    },
+    {
+      "name": "노원",
+      "lat": 37.65627,
+      "lon": 127.06328,
+      "reachable": true,
+      "total_time": 55,
+      "transfers": 0
+    },
+    {
+      "name": "상계",
+      "lat": 37.66088,
+      "lon": 127.07357,
+      "reachable": true,
+      "total_time": 66,
+      "transfers": 1
+    },
+    {
+      "name": "공릉",
+      "lat": 37.62574,
+      "lon": 127.0729,
+      "reachable": true,
+      "total_time": 42,
+      "transfers": 0
+    },
+    {
+      "name": "석계",
+      "lat": 37.61481,
+      "lon": 127.0655,
+      "reachable": true,
+      "total_time": 62,
+      "transfers": 1
+    },
+    {
+      "name": "창동",
+      "lat": 37.65309,
+      "lon": 127.04727,
+      "reachable": true,
+      "total_time": 63,
+      "transfers": 1
+    },
+    {
+      "name": "쌍문",
+      "lat": 37.64863,
+      "lon": 127.03465,
+      "reachable": true,
+      "total_time": 61,
+      "transfers": 1
+    },
+    {
+      "name": "도봉산",
+      "lat": 37.68953,
+      "lon": 127.04605,
+      "reachable": true,
+      "total_time": 61,
+      "transfers": 1
+    },
+    {
+      "name": "청량리",
+      "lat": 37.57996,
+      "lon": 127.04458,
+      "reachable": true,
+      "total_time": 51,
+      "transfers": 0
+    },
+    {
+      "name": "회기",
+      "lat": 37.58946,
+      "lon": 127.05758,
+      "reachable": true,
+      "total_time": 59,
+      "transfers": 0
+    },
+    {
+      "name": "장한평",
+      "lat": 37.56144,
+      "lon": 127.06462,
+      "reachable": true,
+      "total_time": 40,
+      "transfers": 2
+    },
+    {
+      "name": "제기동",
+      "lat": 37.5781,
+      "lon": 127.03489,
+      "reachable": true,
+      "total_time": 46,
+      "transfers": 0
+    },
+    {
+      "name": "사당",
+      "lat": 37.47656,
+      "lon": 126.98166,
+      "reachable": true,
+      "total_time": 15,
+      "transfers": 0
+    },
+    {
+      "name": "노량진",
+      "lat": 37.51353,
+      "lon": 126.94101,
+      "reachable": true,
+      "total_time": 36,
+      "transfers": 0
+    },
+    {
+      "name": "이수",
+      "lat": 37.4852,
+      "lon": 126.98161,
+      "reachable": true,
+      "total_time": 19,
+      "transfers": 0
+    },
+    {
+      "name": "흑석",
+      "lat": 37.50877,
+      "lon": 126.96348,
+      "reachable": true,
+      "total_time": 33,
+      "transfers": 0
+    },
+    {
+      "name": "홍대입구",
+      "lat": 37.55764,
+      "lon": 126.92668,
+      "reachable": true,
+      "total_time": 47,
+      "transfers": 0
+    },
+    {
+      "name": "합정",
+      "lat": 37.54946,
+      "lon": 126.91381,
+      "reachable": true,
+      "total_time": 45,
+      "transfers": 0
+    },
+    {
+      "name": "공덕",
+      "lat": 37.5426,
+      "lon": 126.9521,
+      "reachable": true,
+      "total_time": 37,
+      "transfers": 0
+    },
+    {
+      "name": "망원",
+      "lat": 37.55609,
+      "lon": 126.91005,
+      "reachable": true,
+      "total_time": 52,
+      "transfers": 0
+    },
+    {
+      "name": "상암DMC",
+      "lat": 37.57747,
+      "lon": 126.90045,
+      "reachable": true,
+      "total_time": 60,
+      "transfers": 0
+    },
+    {
+      "name": "신촌",
+      "lat": 37.55513,
+      "lon": 126.93689,
+      "reachable": true,
+      "total_time": 45,
+      "transfers": 1
+    },
+    {
+      "name": "이대",
+      "lat": 37.55673,
+      "lon": 126.94601,
+      "reachable": true,
+      "total_time": 39,
+      "transfers": 1
+    },
+    {
+      "name": "홍제",
+      "lat": 37.58907,
+      "lon": 126.94374,
+      "reachable": true,
+      "total_time": 39,
+      "transfers": 1
+    },
+    {
+      "name": "독립문",
+      "lat": 37.57457,
+      "lon": 126.95775,
+      "reachable": true,
+      "total_time": 37,
+      "transfers": 1
+    },
+    {
+      "name": "교대",
+      "lat": 37.49396,
+      "lon": 127.01467,
+      "reachable": true,
+      "total_time": 5,
+      "transfers": 0
+    },
+    {
+      "name": "고속터미널",
+      "lat": 37.50489,
+      "lon": 127.00492,
+      "reachable": true,
+      "total_time": 11,
+      "transfers": 1
+    },
+    {
+      "name": "양재",
+      "lat": 37.48448,
+      "lon": 127.0339,
+      "reachable": true,
+      "total_time": 10,
+      "transfers": 0
+    },
+    {
+      "name": "방배",
+      "lat": 37.48143,
+      "lon": 126.9976,
+      "reachable": true,
+      "total_time": 9,
+      "transfers": 0
+    },
+    {
+      "name": "남부터미널",
+      "lat": 37.48501,
+      "lon": 127.01619,
+      "reachable": true,
+      "total_time": 10,
+      "transfers": 1
+    },
+    {
+      "name": "왕십리",
+      "lat": 37.56124,
+      "lon": 127.03695,
+      "reachable": true,
+      "total_time": 22,
+      "transfers": 1
+    },
+    {
+      "name": "성수",
+      "lat": 37.54458,
+      "lon": 127.05596,
+      "reachable": true,
+      "total_time": 26,
+      "transfers": 0
+    },
+    {
+      "name": "서울숲",
+      "lat": 37.54362,
+      "lon": 127.04471,
       "reachable": true,
       "total_time": 17,
+      "transfers": 1
+    },
+    {
+      "name": "옥수",
+      "lat": 37.54168,
+      "lon": 127.01727,
+      "reachable": true,
+      "total_time": 18,
+      "transfers": 1
+    },
+    {
+      "name": "안암(고려대)",
+      "lat": 37.58627,
+      "lon": 127.029,
+      "reachable": true,
+      "total_time": 35,
+      "transfers": 2
+    },
+    {
+      "name": "성신여대입구",
+      "lat": 37.59262,
+      "lon": 127.01652,
+      "reachable": true,
+      "total_time": 43,
+      "transfers": 1
+    },
+    {
+      "name": "길음",
+      "lat": 37.60341,
+      "lon": 127.02505,
+      "reachable": true,
+      "total_time": 51,
+      "transfers": 1
+    },
+    {
+      "name": "월곡",
+      "lat": 37.60195,
+      "lon": 127.04152,
+      "reachable": true,
+      "total_time": 40,
+      "transfers": 2
+    },
+    {
+      "name": "잠실",
+      "lat": 37.51326,
+      "lon": 127.10016,
+      "reachable": true,
+      "total_time": 15,
+      "transfers": 0
+    },
+    {
+      "name": "잠실새내",
+      "lat": 37.51169,
+      "lon": 127.08616,
+      "reachable": true,
+      "total_time": 13,
+      "transfers": 0
+    },
+    {
+      "name": "석촌",
+      "lat": 37.50543,
+      "lon": 127.10691,
+      "reachable": true,
+      "total_time": 24,
+      "transfers": 1
+    },
+    {
+      "name": "문정",
+      "lat": 37.48586,
+      "lon": 127.1225,
+      "reachable": true,
+      "total_time": 29,
+      "transfers": 1
+    },
+    {
+      "name": "가락시장",
+      "lat": 37.49224,
+      "lon": 127.11776,
+      "reachable": true,
+      "total_time": 31,
+      "transfers": 1
+    },
+    {
+      "name": "목동",
+      "lat": 37.52607,
+      "lon": 126.86493,
+      "reachable": true,
+      "total_time": 65,
+      "transfers": 0
+    },
+    {
+      "name": "오목교",
+      "lat": 37.5245,
+      "lon": 126.87518,
+      "reachable": true,
+      "total_time": 42,
+      "transfers": 1
+    },
+    {
+      "name": "신정네거리",
+      "lat": 37.52022,
+      "lon": 126.85291,
+      "reachable": true,
+      "total_time": 55,
+      "transfers": 1
+    },
+    {
+      "name": "여의도",
+      "lat": 37.52175,
+      "lon": 126.92436,
+      "reachable": true,
+      "total_time": 36,
+      "transfers": 1
+    },
+    {
+      "name": "영등포",
+      "lat": 37.5155,
+      "lon": 126.90763,
+      "reachable": true,
+      "total_time": 51,
+      "transfers": 0
+    },
+    {
+      "name": "당산",
+      "lat": 37.53495,
+      "lon": 126.90277,
+      "reachable": true,
+      "total_time": 37,
+      "transfers": 0
+    },
+    {
+      "name": "문래",
+      "lat": 37.51793,
+      "lon": 126.89476,
+      "reachable": true,
+      "total_time": 34,
+      "transfers": 0
+    },
+    {
+      "name": "대림",
+      "lat": 37.49301,
+      "lon": 126.89708,
+      "reachable": true,
+      "total_time": 31,
+      "transfers": 0
+    },
+    {
+      "name": "용산",
+      "lat": 37.52985,
+      "lon": 126.96456,
+      "reachable": true,
+      "total_time": 31,
+      "transfers": 1
+    },
+    {
+      "name": "이태원",
+      "lat": 37.53449,
+      "lon": 126.9943,
+      "reachable": true,
+      "total_time": 24,
+      "transfers": 1
+    },
+    {
+      "name": "한남",
+      "lat": 37.52943,
+      "lon": 127.00917,
+      "reachable": true,
+      "total_time": 28,
+      "transfers": 0
+    },
+    {
+      "name": "숙대입구",
+      "lat": 37.54456,
+      "lon": 126.97212,
+      "reachable": true,
+      "total_time": 30,
+      "transfers": 1
+    },
+    {
+      "name": "연신내",
+      "lat": 37.61923,
+      "lon": 126.92104,
+      "reachable": true,
+      "total_time": 44,
+      "transfers": 1
+    },
+    {
+      "name": "불광",
+      "lat": 37.61047,
+      "lon": 126.9298,
+      "reachable": true,
+      "total_time": 44,
+      "transfers": 1
+    },
+    {
+      "name": "구파발",
+      "lat": 37.63676,
+      "lon": 126.91882,
+      "reachable": true,
+      "total_time": 48,
+      "transfers": 1
+    },
+    {
+      "name": "응암",
+      "lat": 37.5986,
+      "lon": 126.91558,
+      "reachable": true,
+      "total_time": 58,
+      "transfers": 1
+    },
+    {
+      "name": "종로3가",
+      "lat": 37.5716,
+      "lon": 126.99179,
+      "reachable": true,
+      "total_time": 31,
+      "transfers": 1
+    },
+    {
+      "name": "광화문",
+      "lat": 37.57153,
+      "lon": 126.97717,
+      "reachable": true,
+      "total_time": 29,
+      "transfers": 1
+    },
+    {
+      "name": "혜화",
+      "lat": 37.58234,
+      "lon": 127.00184,
+      "reachable": true,
+      "total_time": 35,
+      "transfers": 0
+    },
+    {
+      "name": "경복궁",
+      "lat": 37.57576,
+      "lon": 126.97353,
+      "reachable": true,
+      "total_time": 34,
+      "transfers": 1
+    },
+    {
+      "name": "서울역",
+      "lat": 37.55723,
+      "lon": 126.97103,
+      "reachable": true,
+      "total_time": 38,
+      "transfers": 1
+    },
+    {
+      "name": "명동",
+      "lat": 37.56099,
+      "lon": 126.98632,
+      "reachable": true,
+      "total_time": 28,
+      "transfers": 1
+    },
+    {
+      "name": "동대문역사문화공원",
+      "lat": 37.56561,
+      "lon": 127.00905,
+      "reachable": true,
+      "total_time": 28,
+      "transfers": 0
+    },
+    {
+      "name": "약수",
+      "lat": 37.55426,
+      "lon": 127.01036,
+      "reachable": true,
+      "total_time": 22,
+      "transfers": 1
+    },
+    {
+      "name": "상봉",
+      "lat": 37.59558,
+      "lon": 127.08572,
+      "reachable": true,
+      "total_time": 40,
+      "transfers": 1
+    },
+    {
+      "name": "면목",
+      "lat": 37.58858,
+      "lon": 127.0875,
+      "reachable": true,
+      "total_time": 38,
+      "transfers": 1
+    },
+    {
+      "name": "망우",
+      "lat": 37.59955,
+      "lon": 127.09191,
+      "reachable": true,
+      "total_time": 66,
+      "transfers": 1
+    },
+    {
+      "name": "강동",
+      "lat": 37.5358,
+      "lon": 127.1327,
+      "reachable": true,
+      "total_time": 38,
       "transfers": 0
     }
   ]
