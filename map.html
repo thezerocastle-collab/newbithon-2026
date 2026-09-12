@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <title>밤이 작아지는 서울</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #030305;
+            overflow: hidden;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        /* 우주 밤하늘 배경 (Canvas 별밭) */
+        #space-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #map-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 2;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background: transparent !important;
+        }
+
+        /* 카카오 기본 지도 배경 완전 제거 */
+        #map .kakao_map,
+        #map canvas,
+        #map img {
+            background: transparent !important;
+        }
+
+        #map canvas,
+        #map img[src*="daumcdn"],
+        #map img[src*="kakaocdn"] {
+            display: none !important;
+        }
+
+        /* 주요 지역 마커 & 라벨 스타일 */
+        .station-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* 깜빡이지 않고 고정으로 노랗게 빛나는 별 마커 */
+        .yellow-star-marker {
+            width: 5px;
+            height: 5px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #FFFF9F, 0 0 12px #FFFF9F, 0 0 18px #FFFF9F;
+            flex-shrink: 0;
+        }
+
+        /* 지역 이름 라벨 */
+        .station-label {
+            display: none; /* 기본 상태 숨김 */
+            margin-left: 6px;
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-shadow: 0 0 4px #000000, 0 0 8px #000000;
+            pointer-events: none;
+        }
+
+        /* 줌 7 이하(확대 상태)일 때 라벨 표시 */
+        .show-label .station-label {
+            display: inline-block;
+        }
+    </style>
+    <!-- 카카오 지도 SDK (services 라이브러리 추가) -->
+    <script type="text/javascript" src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=a0fbb7f732e990469dfc756f73c12e06&libraries=services"></script>
+</head>
+<body>
+
+<!-- 밤하늘 별밭 배경 Canvas -->
+<canvas id="space-bg"></canvas>
+
+<!-- 지도 영역 -->
+<div id="map-container">
+    <div id="map"></div>
+</div>
+
+<script>
+    // 1. 밤하늘 별 배경 생성
+    const bgCanvas = document.getElementById('space-bg');
+    const ctx = bgCanvas.getContext('2d');
+
+    function resizeCanvas() {
+        bgCanvas.width = window.innerWidth;
+        bgCanvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const stars = Array.from({ length: 150 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        radius: Math.random() * 1.2 + 0.3,
+        alpha: Math.random(),
+        speed: Math.random() * 0.015 + 0.005
+    }));
+
+    function drawStars() {
+        ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+        stars.forEach(star => {
+            star.alpha += star.speed;
+            if (star.alpha > 1 || star.alpha < 0.2) star.speed = -star.speed;
+            
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // 2. 카카오 지도 초기화
+    const container = document.getElementById('map');
+    const options = {
+        center: new kakao.maps.LatLng(37.5665, 126.9780),
+        level: 8,
+        draggable: true
+    };
+    const map = new kakao.maps.Map(container, options);
+
+    // 줌아웃 최대치 제한 (Level 8 이상 축소 불가)
+    map.setMaxLevel(8);
+
+    // 서울 영역 범위(Bounds) 제한 설정
+    const seoulBounds = new kakao.maps.LatLngBounds(
+        new kakao.maps.LatLng(37.4138, 126.7341),
+        new kakao.maps.LatLng(37.7151, 127.2693)
+    );
+
+    // 지도 이동 시 서울 범위를 벗어나지 못하도록 제한
+    kakao.maps.event.addListener(map, 'dragend', function() {
+        const center = map.getCenter();
+        if (!seoulBounds.contain(center)) {
+            map.panTo(new kakao.maps.LatLng(37.5665, 126.9780));
+        }
+    });
+
+    const stationOverlays = [];
+
+    // 3. 줌 레벨 제어 함수 (줌 7 이하일 때 이름 표시, 줌아웃 시 숨김 & 8 레벨 최대치 고정)
+    function toggleStationLabels() {
+        const currentLevel = map.getLevel();
+
+        if (currentLevel > 8) {
+            map.setLevel(8, { animate: false });
+            return;
+        }
+
+        stationOverlays.forEach(item => {
+            if (currentLevel <= 7) {
+                item.element.classList.add('show-label');
+            } else {
+                item.element.classList.remove('show-label');
+            }
+        });
+    }
+
+    kakao.maps.event.addListener(map, 'zoom_changed', toggleStationLabels);
+
+    // 4. 지정된 서울 주요 지역 100개 목록
+    const targetLocations = [
+        // 강남구 (6)
+        { district: "강남구", name: "강남역" }, { district: "강남구", name: "역삼" }, { district: "강남구", name: "선릉" },
+        { district: "강남구", name: "삼성" }, { district: "강남구", name: "압구정" }, { district: "강남구", name: "수서" },
+        // 강동구 (4)
+        { district: "강동구", name: "천호" }, { district: "강동구", name: "강동" }, { district: "강동구", name: "길동" }, { district: "강동구", name: "고덕" },
+        // 강북구 (3)
+        { district: "강북구", name: "수유" }, { district: "강북구", name: "미아" }, { district: "강북구", name: "미아사거리" },
+        // 강서구 (4)
+        { district: "강서구", name: "김포공항" }, { district: "강서구", name: "마곡" }, { district: "강서구", name: "발산" }, { district: "강서구", name: "화곡" },
+        // 관악구 (4)
+        { district: "관악구", name: "신림" }, { district: "관악구", name: "서울대입구" }, { district: "관악구", name: "낙성대" }, { district: "관악구", name: "봉천" },
+        // 광진구 (4)
+        { district: "광진구", name: "건대입구" }, { district: "광진구", name: "구의" }, { district: "광진구", name: "강변" }, { district: "광진구", name: "군자" },
+        // 구로구 (4)
+        { district: "구로구", name: "구로" }, { district: "구로구", name: "구로디지털단지" }, { district: "구로구", name: "신도림" }, { district: "구로구", name: "오류동" },
+        // 금천구 (3)
+        { district: "금천구", name: "가산디지털단지" }, { district: "금천구", name: "독산" }, { district: "금천구", name: "금천구청" },
+        // 노원구 (4)
+        { district: "노원구", name: "노원" }, { district: "노원구", name: "상계" }, { district: "노원구", name: "공릉" }, { district: "노원구", name: "석계" },
+        // 도봉구 (3)
+        { district: "도봉구", name: "창동" }, { district: "도봉구", name: "쌍문" }, { district: "도봉구", name: "도봉산" },
+        // 동대문구 (4)
+        { district: "동대문구", name: "청량리" }, { district: "동대문구", name: "회기" }, { district: "동대문구", name: "장한평" }, { district: "동대문구", name: "제기동" },
+        // 동작구 (4)
+        { district: "동작구", name: "사당" }, { district: "동작구", name: "노량진" }, { district: "동작구", name: "이수" }, { district: "동작구", name: "흑석" },
+        // 마포구 (5)
+        { district: "마포구", name: "홍대입구" }, { district: "마포구", name: "합정" }, { district: "마포구", name: "공덕" }, { district: "마포구", name: "망원" }, { district: "마포구", name: "상암DMC" },
+        // 서대문구 (4)
+        { district: "서대문구", name: "신촌" }, { district: "서대문구", name: "이대" }, { district: "서대문구", name: "홍제" }, { district: "서대문구", name: "독립문" },
+        // 서초구 (5)
+        { district: "서초구", name: "교대" }, { district: "서초구", name: "고속터미널" }, { district: "서초구", name: "양재" }, { district: "서초구", name: "방배" }, { district: "서초구", name: "남부터미널" },
+        // 성동구 (4)
+        { district: "성동구", name: "왕십리" }, { district: "성동구", name: "성수" }, { district: "성동구", name: "서울숲" }, { district: "성동구", name: "옥수" },
+        // 성북구 (4)
+        { district: "성북구", name: "안암" }, { district: "성북구", name: "성신여대입구" }, { district: "성북구", name: "길음" }, { district: "성북구", name: "석계" },
+        // 송파구 (5)
+        { district: "송파구", name: "잠실" }, { district: "송파구", name: "잠실새내" }, { district: "송파구", name: "석촌" }, { district: "송파구", name: "문정" }, { district: "송파구", name: "가락시장" },
+        // 양천구 (3)
+        { district: "양천구", name: "목동" }, { district: "양천구", name: "오목교" }, { district: "양천구", name: "신정네거리" },
+        // 영등포구 (5)
+        { district: "영등포구", name: "여의도" }, { district: "영등포구", name: "영등포" }, { district: "영등포구", name: "당산" }, { district: "영등포구", name: "문래" }, { district: "영등포구", name: "대림" },
+        // 용산구 (4)
+        { district: "용산구", name: "용산" }, { district: "용산구", name: "이태원" }, { district: "용산구", name: "한남" }, { district: "용산구", name: "숙대입구" },
+        // 은평구 (4)
+        { district: "은평구", name: "연신내" }, { district: "은평구", name: "불광" }, { district: "은평구", name: "구파발" }, { district: "은평구", name: "응암" },
+        // 종로구 (4)
+        { district: "종로구", name: "종로3가" }, { district: "종로구", name: "광화문" }, { district: "종로구", name: "혜화" }, { district: "종로구", name: "경복궁" },
+        // 중구 (4)
+        { district: "중구", name: "서울역" }, { district: "중구", name: "명동" }, { district: "중구", name: "동대문역사문화공원" }, { district: "중구", name: "약수" },
+        // 중랑구 (3)
+        { district: "중랑구", name: "상봉" }, { district: "중랑구", name: "면목" }, { district: "중랑구", name: "망우" }
+    ];
+
+    const ps = new kakao.maps.services.Places();
+    const loadedSet = new Set();
+
+    // 100개 지역 좌표 검색 및 별 마커 생성
+    targetLocations.forEach(loc => {
+        const query = `${loc.district} ${loc.name}`;
+        ps.keywordSearch(query, (data, status) => {
+            if (status === kakao.maps.services.Status.OK && data.length > 0) {
+                const place = data[0];
+                const key = `${loc.district}_${loc.name}`;
+
+                if (!loadedSet.has(key)) {
+                    loadedSet.add(key);
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'station-wrapper';
+
+                    const star = document.createElement('div');
+                    star.className = 'yellow-star-marker';
+
+                    const label = document.createElement('span');
+                    label.className = 'station-label';
+                    label.innerText = loc.name;
+
+                    wrapper.appendChild(star);
+                    wrapper.appendChild(label);
+
+                    const customOverlay = new kakao.maps.CustomOverlay({
+                        position: new kakao.maps.LatLng(place.y, place.x),
+                        content: wrapper,
+                        xAnchor: 0.1,
+                        yAnchor: 0.5
+                    });
+
+                    customOverlay.setMap(map);
+                    stationOverlays.push({ element: wrapper, overlay: customOverlay });
+                    toggleStationLabels();
+                }
+            }
+        });
+    });
+
+    // 5. 자치구 내부 경계선 (점선)
+    fetch('https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_municipalities_geo_simple.json')
+        .then(res => res.json())
+        .then(data => {
+            data.features.forEach(feature => {
+                const coordinates = feature.geometry.coordinates[0];
+                const path = coordinates.map(coord => new kakao.maps.LatLng(coord[1], coord[0]));
+
+                const polygon = new kakao.maps.Polygon({
+                    path: path,
+                    strokeWeight: 1.5,
+                    strokeColor: '#FFFFFF',
+                    strokeOpacity: 0.5,
+                    strokeStyle: 'dash',
+                    fillColor: '#000000',
+                    fillOpacity: 0.1
+                });
+                polygon.setMap(map);
+            });
+        });
+
+    // 6. 서울시 전체 외곽 윤곽선 (실선)
+    fetch('https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_outer_geo_simple.json')
+        .then(res => res.json())
+        .then(data => {
+            data.features.forEach(feature => {
+                const coordinates = feature.geometry.coordinates[0];
+                const path = coordinates.map(coord => new kakao.maps.LatLng(coord[1], coord[0]));
+
+                const outerPolyline = new kakao.maps.Polyline({
+                    path: path,
+                    strokeWeight: 3,
+                    strokeColor: '#FFFFFF',
+                    strokeOpacity: 0.9,
+                    strokeStyle: 'solid'
+                });
+                outerPolyline.setMap(map);
+            });
+        });
+</script>
+</body>
+</html>
