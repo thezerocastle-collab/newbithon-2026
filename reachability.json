@@ -1,0 +1,42 @@
+{
+  "start": {
+    "name": "강남",
+    "lat": 37.4979,
+    "lon": 127.0276
+  },
+  "datetime": "2026-09-12 23:40",
+  "results": [
+    {
+      "name": "홍대",
+      "lat": 37.5563,
+      "lon": 126.9237,
+      "reachable": true,
+      "total_time": 41,
+      "transfers": 0
+    },
+    {
+      "name": "서울역",
+      "lat": 37.5547,
+      "lon": 126.9707,
+      "reachable": false,
+      "total_time": null,
+      "transfers": null
+    },
+    {
+      "name": "종로",
+      "lat": 37.5704,
+      "lon": 126.983,
+      "reachable": true,
+      "total_time": 30,
+      "transfers": 0
+    },
+    {
+      "name": "잠실",
+      "lat": 37.5133,
+      "lon": 127.1001,
+      "reachable": true,
+      "total_time": 17,
+      "transfers": 0
+    }
+  ]
+}
