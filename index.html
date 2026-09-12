@@ -2,9 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="utf-8">
-    <!-- 모바일 화면 자동 조절 (뷰포트 설정) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>밤에 작아지는 서울 (Night Seoul UI)</title>
+    <title>밤이 작아지는 서울 (Night Seoul UI)</title>
     
     <!-- Gowun Dodum 폰트 불러오기 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -152,7 +151,7 @@
             background-color: #0f172a;
         }
 
-        /* PC용 기본 패널 위치 및 크기 */
+        /* PC용 패널 설정 */
         #left-panel {
             left: 24px;
             width: 320px;
@@ -408,7 +407,6 @@
             word-break: keep-all;
         }
 
-        /* 🧭 네이버 지도 연동 버튼 스타일 */
         .popup-naver-btn {
             display: flex;
             align-items: center;
@@ -473,63 +471,87 @@
             display: inline-block;
         }
 
-        /* ================= 📱 모바일 반응형 미디어 쿼리 ================= */
+        /* ================= 📱 모바일 전용 글자 크기 확대 ================= */
         @media (max-width: 768px) {
             .ui-panel {
-                top: 16px;
-                padding: 16px;
-                border-radius: 14px;
+                top: 12px;
+                padding: 16px 14px;
             }
 
-            /* 모바일에서 좌/우 패널 크기를 화면에 맞게 반응형 배치 */
+            /* 모바일에서도 좌/우 패널 양쪽에 동일하게 반응형 배치 */
             #left-panel {
-                left: 16px;
-                width: calc(100% - 32px);
-                max-width: 360px;
+                left: 10px;
+                width: calc(50% - 15px);
             }
 
             #right-panel {
-                top: auto;
-                bottom: 16px;
-                right: 16px;
-                width: calc(100% - 32px);
-                max-width: 360px;
+                top: 12px;
+                right: 10px;
+                width: calc(50% - 15px);
             }
 
-            .category-list {
-                max-height: 180px; /* 모바일 하단 패널 높이 제한 */
-            }
-
+            /* 글씨 크기 전반적 확대 */
             .panel-title {
+                font-size: 16px;
+                margin-bottom: 14px;
+            }
+
+            .toggle-container {
+                font-size: 13px;
+            }
+
+            .input-group label {
+                font-size: 13px;
+                margin-bottom: 5px;
+            }
+
+            .input-control {
                 font-size: 14px;
-                margin-bottom: 12px;
-            }
-
-            .input-group {
-                margin-bottom: 10px;
-            }
-
-            .picker-wrapper {
-                height: 90px;
-            }
-
-            .picker-selection {
-                top: 30px;
-                height: 30px;
-            }
-
-            .wheel-container {
-                padding: 30px 0;
+                padding: 10px 12px;
             }
 
             .wheel-item {
-                height: 30px;
-                line-height: 30px;
-                font-size: 12px;
+                font-size: 14px;
             }
 
             .wheel-item.active {
+                font-size: 16px;
+            }
+
+            .btn-action {
+                font-size: 15px;
+                padding: 14px 10px;
+            }
+
+            .category-item {
+                padding: 11px 12px;
+            }
+
+            .category-item label {
                 font-size: 14px;
+            }
+
+            .category-item input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+            }
+
+            .facility-info-popup {
+                font-size: 13px;
+            }
+
+            .popup-title {
+                font-size: 14px;
+            }
+
+            .popup-address,
+            .popup-hours {
+                font-size: 12px;
+            }
+
+            .popup-naver-btn {
+                font-size: 12px;
+                padding: 8px 0;
             }
         }
     </style>
