@@ -157,7 +157,7 @@ def check_route(start_lon, start_lat, end_lon, end_lat, search_dt):
         "startY": str(start_lat),
         "endX": str(end_lon),
         "endY": str(end_lat),
-        "count": 3,
+        "count": 1,
         "searchDttm": search_dt.strftime("%Y%m%d%H%M")
     }
 
@@ -325,7 +325,7 @@ def calculate_reachability(req: ReachabilityRequest):
         }
 
     try:
-        with ThreadPoolExecutor(max_workers=8) as executor:
+        with ThreadPoolExecutor(max_workers=12) as executor:
             future_map = {
                 executor.submit(calculate_one, name, destination): name
                 for name, destination in targets
