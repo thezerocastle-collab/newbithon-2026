@@ -363,9 +363,9 @@
         .show-label .station-label {
             display: inline-block;
         }
-    </style>
+</style>
     <!-- 카카오 지도 SDK -->
-    <script type="text/javascript" src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=a0fbb7f732e990469dfc756f73c12e06&libraries=services"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a0fbb7f732e990469dfc756f73c12e06&libraries=services"></script>
 </head>
 <body>
 
@@ -402,15 +402,15 @@
 
     <!-- 🎡 시각 선택 다이얼 휠 -->
     <div class="input-group">
-        <label>기준 시각 설정 (10:30 ~ 12:30)</label>
+        <label>기준 시각 설정 (22:30 ~ 00:30)</label>
         <div class="picker-wrapper">
             <div class="picker-selection"></div>
             <div class="wheel-container" id="time-wheel" onscroll="handleTimeWheelScroll()">
-                <div class="wheel-item" data-time="10:30">10 : 30</div>
-                <div class="wheel-item" data-time="11:00">11 : 00</div>
-                <div class="wheel-item active" data-time="11:30">11 : 30</div>
-                <div class="wheel-item" data-time="12:00">12 : 00</div>
-                <div class="wheel-item" data-time="12:30">12 : 30</div>
+                <div class="wheel-item" data-time="22:30">22 : 30</div>
+                <div class="wheel-item" data-time="23:00">23 : 00</div>
+                <div class="wheel-item active" data-time="23:30">23 : 30</div>
+                <div class="wheel-item" data-time="00:00">00 : 00</div>
+                <div class="wheel-item" data-time="00:30">00 : 30</div>
             </div>
         </div>
     </div>
@@ -519,7 +519,7 @@
     });
 
     const stationOverlays = [];
-    let activePolygon = null;
+    let reachabilityShapes = [];
     let userCurrentCoords = null;
     let userLocationMarker = null;
     let categoryEmojiOverlays = [];
@@ -688,7 +688,7 @@
     });
 
     // 4. 경계선 렌더링
-    fetch('https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_municipalities_geo_simple.json')
+    fetch('https://raw.githubusercontent.com/southkorea/seoul-maps/master/juso/2015/json/seoul_municipalities_geo_simple.json')
         .then(res => res.json())
         .then(data => {
             data.features.forEach(feature => {
@@ -708,7 +708,7 @@
             });
         });
 
-    fetch('https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_outer_geo_simple.json')
+    fetch('https://raw.githubusercontent.com/southkorea/seoul-maps/master/juso/2015/json/seoul_municipalities_geo_simple.json')
         .then(res => res.json())
         .then(data => {
             data.features.forEach(feature => {
@@ -856,47 +856,244 @@
 
     function getSelectedTime() {
         const activeItem = document.querySelector('#time-wheel .wheel-item.active');
-        return activeItem ? activeItem.getAttribute('data-time') : '11:30';
+        return activeItem ? activeItem.getAttribute('data-time') : '23:30';
+    }
+
+    // =========================================================
+    // 도달 가능 범위 시각화
+    // - 지도 좌표에 고정되는 Kakao Maps 도형만 사용
+    // - 큰 원 하나가 아니라 여러 겹의 아주 옅은 면으로 부드럽게 표현
+    // - 가까운 대표 생활권끼리는 희미한 연결 띠로 이어서
+    //   하나의 "빛나는 생활권"처럼 보이게 함
+    // =========================================================
+
+    function clearReachabilityShapes() {
+        reachabilityShapes.forEach(shape => shape.setMap(null));
+        reachabilityShapes = [];
+    }
+
+    function distanceMeters(a, b) {
+        const R = 6371000;
+        const toRad = deg => deg * Math.PI / 180;
+
+        const lat1 = toRad(a.lat);
+        const lat2 = toRad(b.lat);
+        const dLat = toRad(b.lat - a.lat);
+        const dLon = toRad(b.lon - a.lon);
+
+        const h =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1) * Math.cos(lat2) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        return 2 * R * Math.asin(Math.sqrt(h));
+    }
+
+    function drawSoftGlowArea(point) {
+        const center = new kakao.maps.LatLng(point.lat, point.lon);
+
+        // 가장 바깥쪽: 경계를 흐리게 만드는 아주 옅은 면
+        const outer = new kakao.maps.Circle({
+            center: center,
+            radius: 900,
+            strokeWeight: 0,
+            strokeOpacity: 0,
+            fillColor: '#FFFF6F',
+            fillOpacity: 0.025
+        });
+
+        // 중간층
+        const middle = new kakao.maps.Circle({
+            center: center,
+            radius: 650,
+            strokeWeight: 0,
+            strokeOpacity: 0,
+            fillColor: '#FFFF6F',
+            fillOpacity: 0.045
+        });
+
+        // 안쪽층: 중심만 살짝 밝게
+        const inner = new kakao.maps.Circle({
+            center: center,
+            radius: 380,
+            strokeWeight: 0,
+            strokeOpacity: 0,
+            fillColor: '#FFFF6F',
+            fillOpacity: 0.065
+        });
+
+        outer.setMap(map);
+        middle.setMap(map);
+        inner.setMap(map);
+
+        reachabilityShapes.push(outer, middle, inner);
+    }
+
+    function drawSoftConnection(a, b) {
+        const path = [
+            new kakao.maps.LatLng(a.lat, a.lon),
+            new kakao.maps.LatLng(b.lat, b.lon)
+        ];
+
+        // 넓고 아주 희미한 바탕 띠
+        const wide = new kakao.maps.Polyline({
+            path: path,
+            strokeWeight: 14,
+            strokeColor: '#FFFF6F',
+            strokeOpacity: 0.035,
+            strokeStyle: 'solid'
+        });
+
+        // 중앙에 얇은 밝은 띠
+        const thin = new kakao.maps.Polyline({
+            path: path,
+            strokeWeight: 5,
+            strokeColor: '#FFFF8A',
+            strokeOpacity: 0.055,
+            strokeStyle: 'solid'
+        });
+
+        wide.setMap(map);
+        thin.setMap(map);
+
+        reachabilityShapes.push(wide, thin);
+    }
+
+    function drawReachabilityArea(data) {
+        clearReachabilityShapes();
+
+        const reachable = data.results
+            .filter(item => item.reachable === true)
+            .map(item => ({
+                name: item.name,
+                lat: item.lat,
+                lon: item.lon
+            }));
+
+        if (data.start) {
+            reachable.push({
+                name: data.start.name,
+                lat: data.start.lat,
+                lon: data.start.lon
+            });
+        }
+
+        if (reachable.length === 0) return;
+
+        // 각 생활권에 부드러운 3중 면
+        reachable.forEach(point => {
+            drawSoftGlowArea(point);
+        });
+
+        // 각 점에서 가장 가까운 2개만 연결.
+        // 너무 먼 점은 연결하지 않아 촉수처럼 뻗는 현상을 방지.
+        const madeConnections = new Set();
+
+        reachable.forEach((point, i) => {
+            const nearest = reachable
+                .map((other, j) => ({
+                    index: j,
+                    point: other,
+                    distance: i === j ? Infinity : distanceMeters(point, other)
+                }))
+                .sort((x, y) => x.distance - y.distance)
+                .slice(0, 2);
+
+            nearest.forEach(item => {
+                if (item.distance > 2600) return;
+
+                const key = [i, item.index].sort((a, b) => a - b).join('-');
+                if (madeConnections.has(key)) return;
+
+                madeConnections.add(key);
+                drawSoftConnection(point, item.point);
+            });
+        });
     }
 
     function handleRangeCalculate() {
         const activeItem = document.querySelector('#location-wheel .wheel-item.active');
-        const selectedLoc = activeItem ? activeItem.getAttribute('data-value') : 'CURRENT_LOCATION';
+        const selectedLoc = activeItem
+            ? activeItem.getAttribute('data-value')
+            : 'CURRENT_LOCATION';
+
         const dateValue = document.getElementById('base-date').value;
         const timeValue = getSelectedTime();
+        const button = document.getElementById('btn-calculate');
 
-        let startName = selectedLoc;
+        const payload = {
+            date: dateValue,
+            time: timeValue
+        };
+
         if (selectedLoc === 'CURRENT_LOCATION') {
-            startName = userCurrentCoords ? `내 현재 위치(${userCurrentCoords.lat.toFixed(3)}, ${userCurrentCoords.lng.toFixed(3)})` : '내 현재 위치';
+            if (!userCurrentCoords) {
+                alert('현재 위치를 아직 불러오지 못했습니다. 잠시 후 다시 시도하거나 대표 지역을 선택해주세요.');
+                return;
+            }
+
+            payload.start_lat = userCurrentCoords.lat;
+            payload.start_lon = userCurrentCoords.lng;
+            payload.start_name = '내 현재 위치';
+        } else {
+            payload.start_name = selectedLoc;
         }
 
-        console.log(`[이동 범위 계산 요청] 출발지: ${startName}, 기준일시: ${dateValue} ${timeValue}`);
+        console.log('[실시간 이동 범위 계산 요청]', payload);
 
-        if (activePolygon) activePolygon.setMap(null);
+        const oldText = button.innerText;
+        button.disabled = true;
+        button.innerText = '계산 중...';
 
-        const currentCoords = getCurrentActiveCoords();
-        const lat = currentCoords.lat;
-        const lng = currentCoords.lng;
+        fetch('/api/reachability', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(async response => {
+            const data = await response.json();
 
-        const sampleOuterPath = [
-            new kakao.maps.LatLng(lat + 0.01, lng - 0.01),
-            new kakao.maps.LatLng(lat + 0.015, lng + 0.005),
-            new kakao.maps.LatLng(lat - 0.005, lng + 0.015),
-            new kakao.maps.LatLng(lat - 0.01, lng - 0.005)
-        ];
+            if (!response.ok) {
+                throw new Error(data.detail || '이동 가능 범위를 계산하지 못했습니다.');
+            }
 
-        activePolygon = new kakao.maps.Polygon({
-            path: sampleOuterPath,
-            strokeWeight: 2,
-            strokeColor: '#FFFF6F',
-            strokeOpacity: 0.9,
-            strokeStyle: 'solid',
-            fillColor: '#FFFF6F',
-            fillOpacity: 0.45
+            return data;
+        })
+        .then(data => {
+            drawReachabilityArea(data);
+
+            const reachableCount = data.results.filter(
+                item => item.reachable === true
+            ).length;
+
+            const unreachableCount = data.results.filter(
+                item => item.reachable === false
+            ).length;
+
+            console.log(
+                `도달 가능 ${reachableCount}곳 / 도달 불가 ${unreachableCount}곳`
+            );
+
+            button.innerText = `도달 가능 ${reachableCount}곳`;
+        })
+        .catch(error => {
+            console.error('이동 가능 범위 계산 오류:', error);
+            alert(error.message);
+            button.innerText = oldText;
+        })
+        .finally(() => {
+            button.disabled = false;
+
+            setTimeout(() => {
+                if (!button.disabled) {
+                    button.innerText = '이동 가능 범위 확인';
+                }
+            }, 2500);
         });
-
-        activePolygon.setMap(map);
     }
+
 </script>
 </body>
 </html>
